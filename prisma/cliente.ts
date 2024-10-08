@@ -1,0 +1,21 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { PrismaClient } from "@prisma/client";
+
+let prisma: PrismaClient;
+
+if (process.env.NODE_ENV === 'production') {
+    prisma = new PrismaClient();
+} else {
+    if (!(global as any).prisma) {
+        (global as any).prisma = new PrismaClient();
+    } 
+
+    prisma = (global as any).prisma;
+}
+
+process.on('SIGINT', async () => {
+    await prisma.$disconnect();
+    process.exit(0);
+})
+
+export default prisma;

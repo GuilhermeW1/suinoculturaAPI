@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model State {
+    id        Int     @id @default(autoincrement())
+    ds_estado String
+    Porca     Porca[]
+}
+
+model Porca {
+    id               Int         @id @default(autoincrement())
+    active           Boolean
+    brinco           String
+    moca             String
+    tetas            Int
+    desperdica_racao Boolean
+    boa              Boolean
+    estado           State       @relation(fields: [estadoId], references: [id])
+    estadoId         Int
+    Alocation        Alocation[]
+}
+
+model Sala {
+    id   Int    @id @default(autoincrement())
+    name String
+    Baia Baia[]
+}
+
+model Baia {
+    id        Int         @id @default(autoincrement())
+    name      String
+    number    Int
+    idSala    Int
+    active    Boolean
+    sala      Sala        @relation(fields: [idSala], references: [id])
+    Alocation Alocation[]
+}
+
+model Alocation {
+    id        Int       @id @default(autoincrement())
+    idBaia    Int
+    baia      Baia      @relation(fields: [idBaia], references: [id])
+    idPorca   Int
+    porca     Porca     @relation(fields: [idPorca], references: [id])
+    is_actite Boolean
+    dt_inicio DateTime
+    dt_fim    DateTime?
+}
